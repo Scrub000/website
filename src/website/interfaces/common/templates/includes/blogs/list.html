@@ -1,0 +1,14 @@
+{% if blogs %}
+    {% if not no_title %}
+        <h3>Blogs</h3>
+    {% endif %}
+    <div class="blogs">
+        {% for blog in blogs %}
+        <div class="blog">
+            <h3><a href="{{ url_for('blogs.display', slug=blog.slug) }}">{{ blog.title }}</a></h3>
+            <span>By <a href="{{ url_for('accounts.display', username=blog.author.username) }}">{{ blog.author.display }}</a> on {{ blog.created_at|formatdatetime('tiny') }} under {% for category in blog.categories %}<a href="{{ url_for('categories.display', slug=category.slug) }}">{{ category.title }}</a>&ensp;{% endfor %}</span>
+            <p>{{ blog.description }}</p>
+        </div>
+        {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,43 @@
+name: Python CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        sudo apt install libpq-dev python-dev
+        pip install invoke
+        inv install --dev --force
+    - name: Run black linter
+      run: |
+        inv run-python-black-linter
+    - name: Run isort linter
+      run: |
+        inv run-python-isort-linter
+    - name: Run flake8 linter
+      run: |
+        inv run-python-flake8-linter
+    - name: Run unit tests
+      run: |
+        inv run-unit-tests
+    - name: Run integration tests
+      run: |
+        inv run-integration-tests
+    - name: Run functional tests
+      run: |
+        inv run-functional-tests

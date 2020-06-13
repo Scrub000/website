@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    {% if categories %}
+        <div class="categories">
+            <h3>Categories</h3>
+            {% for category in categories %}
+                <span class="category"><a href="{{ url_for('categories.display', slug=category.slug) }}">{{ category.title }}</a></span>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if blog_data %}
+        <div class="blogs">
+            <h3>Blogs</h3>
+            <ul>
+                {% for year in blog_data.keys() %}
+                    <li>{{ year }}</li>
+                    <ul>
+                        {% for month in blog_data[year].keys() %}
+                            <li>{{ month|formatmonth }}</li>
+                            <ul>
+                                {% for blog in blog_data[year][month] %}
+                                    <li><a href="{{ url_for('blogs.display', slug=blog.slug) }}">{{ blog.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock body %}

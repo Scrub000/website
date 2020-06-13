@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div class="blog">
+        <p>{{ blog.body|safe }}</p>
+        <span>By <a href="{{ url_for('accounts.display', username=blog.author.username) }}">{{ blog.author.display }}</a> on {{ blog.created_at|formatdatetime('tiny') }} under {% for category in blog.categories %}<a href="{{ url_for('categories.display', slug=category.slug) }}">{{ category.title }}&ensp;</a>{% endfor %}</span>
+        {% if blog.updated_at %}
+            <br/>
+            <span><b>Updated on {{ blog.updated_at|formatdatetime('tiny') }}</b></span>
+        {% endif %} 
+    </div>
+{% endblock body %}

@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div class="account">
+        {% if account.about %}
+            <p>{{ account.about }}</p>
+        {% endif %}
+        <span>Joined on {{ account.created_at|formatdatetime('tiny') }}</span>
+        {% include "includes/blogs/list.html" %}
+    </div>
+{% endblock body %}

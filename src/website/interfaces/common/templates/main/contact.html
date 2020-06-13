@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div class="contact">
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.email(size=32) }}
+                {% for error in form.email.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.enquiry(size=32) }}
+                {% for error in form.enquiry.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.body(size=32) }}
+                {% for error in form.body.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+    </div>
+{% endblock body %}

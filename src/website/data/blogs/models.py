@@ -29,6 +29,7 @@ class Blog(db.Model):
     body = db.Column(db.Text(), nullable=False)
 
     published = db.Column(db.Boolean(), nullable=False, default=False)
+    comment = db.Column(db.Boolean(), nullable=True, default=False)
 
     created_at = db.Column(
         db.DateTime(timezone=True),
@@ -39,6 +40,9 @@ class Blog(db.Model):
 
     author_id = db.Column(
         db.Integer(), db.ForeignKey("accounts.id"), nullable=True
+    )
+    comments = db.relationship(
+        "Comment", cascade="all, delete", backref="blog", lazy=True
     )
 
     def __repr__(self):
@@ -62,6 +66,7 @@ class Blog(db.Model):
         description: str = None,
         categories: list = None,
         published: bool = False,
+        comment: bool = False,
     ):
         """
         Create a new Blog in the database.
@@ -75,6 +80,7 @@ class Blog(db.Model):
             body=body,
             author=author,
             published=published,
+            comment=comment,
         )
 
         if categories:
@@ -98,6 +104,7 @@ class Blog(db.Model):
             "author",
             "categories",
             "published",
+            "comment",
         ]
         for key, value in kwargs.items():
             assert key in allowed_attributes

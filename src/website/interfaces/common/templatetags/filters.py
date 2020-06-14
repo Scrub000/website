@@ -59,3 +59,11 @@ def format_month(month: int) -> str:
     if month < 1 or month > 12:
         raise InvalidFormat("Month cannot be less than 1 or greater than 12")
     return calendar.month_abbr[month]
+
+
+@filters.app_template_filter(name="renderwhitespace")
+def render_whitespace(number: int = 1) -> str:
+    """
+    Render the HTML whitespace character. Requires `|safe` to be chained.
+    """
+    return "{}".format("&ensp;&ensp;&ensp;&ensp;" * number)

@@ -27,6 +27,7 @@ def create_blog(
     description: str = None,
     categories: list = None,
     published: bool = False,
+    comment: bool = False,
 ) -> blog_models.Blog:
     """
     Create a Blog in the database.
@@ -53,6 +54,7 @@ def create_blog(
             description=description,
             categories=categories,
             published=published,
+            comment=comment,
         )
     except Exception:
         # TODO: Publish an event

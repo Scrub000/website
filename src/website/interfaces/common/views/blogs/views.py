@@ -24,7 +24,10 @@ from .....data.blogs import models as blog_models
 from .....data.categories import models as category_models
 from .....domain import exceptions
 from .....domain.blogs import operations, queries
+from .....domain.comments import operations as comment_operations
+from .....domain.comments import queries as comment_queries
 from ...forms.blogs import forms
+from ...forms.comments import forms as comment_forms
 
 blogs = flask.Blueprint(
     name="blogs", import_name=__name__, url_prefix="/blogs"
@@ -38,14 +41,39 @@ BLEACH_KWARGS = {
 }
 
 
-@blogs.route(rule="/<string:slug>")
+@blogs.route(rule="/<string:slug>", methods=["GET", "POST"])
 def display(slug: str):
     try:
         blog = queries.get_blog(slug=slug)
     except exceptions.DoesNotExist:
         flask.abort(status=404)
     flask_bouncer.ensure(action=flask_bouncer.READ, subject=blog)
-    context = {"title": blog.title, "blog": blog}
+    form = comment_forms.Create()
+    if form.validate_on_submit():
+        try:
+            comment_operations.create_comment(
+                body=form.body.data, author=flask_login.current_user, blog=blog
+            )
+        except exceptions.UnableToCreate as e:
+            flask.flash(message=str(e), category="error")
+            return flask.redirect(
+                location=flask.url_for(
+                    endpoint="blogs.display", slug=blog.slug
+                )
+            )
+        else:
+            return flask.redirect(
+                location=flask.url_for(
+                    endpoint="blogs.display", slug=blog.slug
+                )
+            )
+    comments = comment_queries.get_comments(blog=blog)
+    context = {
+        "title": blog.title,
+        "blog": blog,
+        "form": form,
+        "comments": comments,
+    }
     return flask.render_template(
         template_name_or_list="blogs/display.html", **context
     )
@@ -66,6 +94,7 @@ def create():
                 author=flask_login.current_user,
                 categories=form.categories.data,
                 published=form.published.data,
+                comment=form.comment.data,
             )
         except exceptions.UnableToCreate:
             flask.flash(message="Unable to create blog.", category="error")
@@ -104,6 +133,7 @@ def edit(slug: str):
                 body=bleach.clean(text=form.body.data, **BLEACH_KWARGS),
                 categories=form.categories.data,
                 published=form.published.data,
+                comment=form.comment.data,
             )
         except exceptions.UnableToUpdate:
             flask.flash(message="Unable to update blog.", category="error")

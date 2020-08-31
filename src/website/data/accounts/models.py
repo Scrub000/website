@@ -53,6 +53,7 @@ class Account(db.Model, flask_login.UserMixin):  # type: ignore
     )
 
     blogs = db.relationship("Blog", backref="author", lazy=True)
+    comments = db.relationship("Comment", backref="author", lazy=True)
 
     def __repr__(self):
         return f"<Account {self.username}>"

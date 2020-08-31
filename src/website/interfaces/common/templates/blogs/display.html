@@ -9,4 +9,29 @@
             <span><b>Updated on {{ blog.updated_at|formatdatetime('tiny') }}</b></span>
         {% endif %} 
     </div>
+    {% if blog.comment and form %}
+        </br>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.body(size=32) }}
+                {% for error in form.body.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+    {% endif %}
+    {% if comments %}
+        <h3>Comments</h3>
+        <div class="comments">
+            {% for comment in comments %}
+                <div class="comment">
+                    {{ comment.level|renderwhitespace|safe }}
+                    <span><a href="{{ url_for('accounts.display', username=comment.author.username) }}">{{ comment.author.display }}</a> <small>({{ comment.created_at|formatdatetime('tiny') }})</small>:</span>
+                    <span>{{ comment.body }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock body %}

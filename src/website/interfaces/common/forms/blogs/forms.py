@@ -59,10 +59,12 @@ class Base(flask_wtf.FlaskForm):
 
 class Create(Base):
     published = wtforms.BooleanField(label="Publish", default=False)
+    comment = wtforms.BooleanField(label="Allow comments", default=True)
 
 
 class Edit(Base):
     published = wtforms.BooleanField(label="Publish", default=False)
+    comment = wtforms.BooleanField(label="Allow comments", default=True)
 
 
 class Delete(flask_wtf.FlaskForm):

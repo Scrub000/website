@@ -14,9 +14,10 @@
 #   You should have received a copy of the GNU Affero General Public License
 #   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from website.data.accounts import models
 
-def test_test(client, database, factory):
-    account = factory.Account()
 
-    assert account
-    assert account.username == "gough"
+def test_test(factory):
+    factory.Account()
+
+    assert models.Account.query.count() == 1

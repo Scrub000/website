@@ -16,9 +16,12 @@
 
 import factory
 
+from tests import factories
 from website.data.accounts import models
 
 from . import model_factory
+
+__all__ = ["Account", "create_account_with_blogs"]
 
 
 class Account(model_factory.Base):
@@ -26,13 +29,22 @@ class Account(model_factory.Base):
     Create a default account with no blog posts.
     """
 
+    username = factory.Faker("user_name")
+    display = factory.Faker("name")
+    email = factory.Faker("safe_email")
+    about = factory.Faker("text", max_nb_chars=200)
+    password = factory.PostGenerationMethodCall(
+        method_name="update", password="password"
+    )
+    admin = False
+    confirmed = False
+
     class Meta:
         model = models.Account
 
-    username = "gough"
-    display = "Gough Whitlam"
-    email = "gough.whitlam@alp.org.au"
-    password = factory.PostGenerationMethodCall(
-        method_name="update", password="It's time"
-    )
-    confirmed = False
+
+def create_account_with_blogs(blog_kwargs: dict = {}) -> models.Account:
+    blog = factories.Blog(**blog_kwargs)
+    account = blog.author
+    factories.Blog(author=account, **blog_kwargs)
+    return account

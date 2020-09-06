@@ -14,5 +14,31 @@
 #   You should have received a copy of the GNU Affero General Public License
 #   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from tests.factories.accounts import *  # noqa
-from tests.factories.blogs import *  # noqa
+import factory
+
+from tests import factories
+from website.data.blogs import models
+from website.domain import utils
+
+from . import model_factory
+
+
+class Blog(model_factory.Base):
+    """
+    Create a blog post with an author.
+    """
+
+    title = factory.Faker("catch_phrase")
+    slug = factory.LazyAttribute(
+        lambda o: utils.unique_slugify(
+            model=models.Blog, text=o.title, max_length=200
+        )
+    )
+    description = factory.Faker("text", max_nb_chars=200)
+    body = factory.Faker("text", max_nb_chars=2000)
+    published = False
+    comment = False
+    author = factory.SubFactory(factory=factories.Account)
+
+    class Meta:
+        model = models.Blog

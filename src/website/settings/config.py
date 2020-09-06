@@ -106,6 +106,8 @@ class Test(Base):
     ################
     DEBUG = False
     TESTING = True
+    HASH_ROUNDS = 1
+    SERVER_NAME = "localhost.localdomain"
 
     #####################
     # SQLAlchemy settings

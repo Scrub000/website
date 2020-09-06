@@ -209,6 +209,7 @@ def register():
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
+    flask.flash("Logged out.")
     return flask.redirect(flask.url_for(endpoint="main.landing"))
 
 
